@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+	<AddIn Type="Application">
+		<Name>drafter</Name>
+		<Assembly>drafter.dll</Assembly>
+		<FullClassName>drafter.AppCommand</FullClassName>
+		<AddInId>BE1CAFC4-2786-4534-A5EA-82693CFB5AE9</AddInId>
+		<VendorId>Vipin Kumar IT 2025</VendorId>
+		<VendorDescription>""</VendorDescription>
+	</AddIn>
+</RevitAddIns>
