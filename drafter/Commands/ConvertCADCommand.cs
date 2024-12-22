@@ -19,43 +19,75 @@ namespace drafter.Commands
         {
             try
             {
-                // Use OpenFileDialog to select an AutoCAD file
+                // Step 1: Select a CAD file using OpenFileDialog
                 OpenFileDialog openFileDialog = new OpenFileDialog
                 {
-                    Title = "Select an AutoCAD File",
-                    Filter = "AutoCAD Files (*.dwg;*.dxf)|*.dwg;*.dxf|All Files (*.*)|*.*",
+                    Title = "Select a CAD File to Import",
+                    Filter = "CAD Files (*.dwg;*.dxf)|*.dwg;*.dxf",
                     Multiselect = false
                 };
 
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    string selectedFilePath = openFileDialog.FileName;
-
-                    // Validate the file
-                    if (File.Exists(selectedFilePath))
-                    {
-                        TaskDialog.Show("File Selected", $"You selected: {selectedFilePath}");
-
-                        // Add logic to handle the AutoCAD file
-                        // For example, import the CAD file into a Revit project or process it.
-                    }
-                    else
-                    {
-                        TaskDialog.Show("Error", "The selected file does not exist.");
-                        return Result.Failed;
-                    }
-                }
-                else
+                if (openFileDialog.ShowDialog() != DialogResult.OK)
                 {
                     TaskDialog.Show("Cancelled", "No file was selected.");
                     return Result.Cancelled;
                 }
 
-                return Result.Succeeded;
+                string cadFilePath = openFileDialog.FileName;
+
+                // Step 2: Validate the file
+                if (!File.Exists(cadFilePath))
+                {
+                    TaskDialog.Show("Error", "The selected file does not exist.");
+                    return Result.Failed;
+                }
+
+                // Step 3: Get the active Revit document and view
+                UIDocument uiDoc = commandData.Application.ActiveUIDocument;
+                Document doc = uiDoc.Document;
+                Autodesk.Revit.DB.View activeView = uiDoc.ActiveView;
+
+                if (!(activeView is ViewPlan || activeView is ViewSheet))
+                {
+                    TaskDialog.Show("Error", "Please run this command in a plan or sheet view.");
+                    return Result.Failed;
+                }
+
+                // Step 4: Define DWG import options
+                DWGImportOptions importOptions = new DWGImportOptions
+                {
+                    Placement = ImportPlacement.Origin,
+                    ColorMode = ImportColorMode.BlackAndWhite,
+                    OrientToView = true, // Align CAD file to the view plane
+                    Unit = ImportUnit.Default
+                };
+
+                // Step 5: Import the CAD file and fetch its elements
+                using (Transaction transaction = new Transaction(doc, "Import CAD File"))
+                {
+                    transaction.Start();
+
+                    ElementId importedElementId;
+                    bool success = doc.Import(cadFilePath, importOptions, activeView, out importedElementId);
+
+                    if (success)
+                    {
+
+                        TaskDialog.Show("Success", "CAD file imported successfully and elements fetched.");
+                        transaction.Commit();
+                        return Result.Succeeded;
+                    }
+                    else
+                    {
+                        TaskDialog.Show("Error", "Failed to import the CAD file.");
+                        transaction.RollBack();
+                        return Result.Failed;
+                    }
+                }
             }
             catch (Exception ex)
             {
-                // Handle unexpected errors
+                // Handle exceptions
                 message = ex.Message;
                 return Result.Failed;
             }
