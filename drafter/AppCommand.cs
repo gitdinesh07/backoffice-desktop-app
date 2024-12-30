@@ -31,7 +31,7 @@ namespace drafter
                 string assemblyPath = Assembly.GetExecutingAssembly().Location;
 
                 // Add Buttons for Each Function
-                AddButton(cadPanel, "ConvertCAD", "Convert CAD", assemblyPath, "drafter.Commands.ConvertCADCommandV2", "Convert CAD drawing into Revit elements");
+                AddButton(cadPanel, "ConvertCAD", "Convert CAD", assemblyPath, "drafter.Commands.ConvertCADCommandV3", "Convert CAD drawing into Revit elements");
                 AddButton(cadPanel, "AutoAnnotate", "Auto Annotation", assemblyPath, "drafter.Commands.AutoAnnotationCommand", "Perform Auto Annotation");
                 AddButton(cadPanel, "AutoDimension", "Auto Dimension", assemblyPath, "drafter.Commands.AutoDimensionCommand", "Perform Auto Dimensioning");
 
@@ -71,8 +71,6 @@ namespace drafter
                 LargeImage = new BitmapImage(new Uri(Path.Combine(Path.GetDirectoryName(assemblyPath), "Resources", name + ".png")))
             };
             panel.AddItem(buttonData);
-
-
         }
     }
 }
