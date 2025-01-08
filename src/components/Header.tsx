@@ -29,9 +29,12 @@ const Header = () => {
     <>
       <nav className="p-6 md:flex md:justify-between md:items-center sticky top-0 z-50 border-b-[1px] border-b-[#333]">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold gradient-color">
-            <Link to="/">Design Draft</Link>
-          </h1>
+          <div className="title flex items-center gap-3">
+            <img src="../assets/logo.svg" alt="logo" className="h-10 w-10" />
+            <h1 className="text-2xl font-bold gradient-color">
+              <Link to="/">Design Draft</Link>
+            </h1>
+          </div>
 
           {/* Hamburger Button */}
           <button className="text-3xl md:hidden" onClick={toggleMenu} aria-label="Toggle Menu">

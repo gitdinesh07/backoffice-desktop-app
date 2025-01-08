@@ -1,5 +1,5 @@
 import React from "react";
-import { Facebook, LinkedIn, YouTube, Instagram, Twitter } from "@mui/icons-material";
+import { Facebook, LinkedIn, Instagram, Twitter } from "@mui/icons-material";
 
 const Footer: React.FC = () => {
   return (
